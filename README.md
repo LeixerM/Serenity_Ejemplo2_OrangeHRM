@@ -1,4 +1,4 @@
-  # Proyecto de pruebas automatizada para Reto Tecnico Davivienda
+  # Proyecto de pruebas automatizada para Orange HRM
 
 Este proyecto contiene pruebas automatizadas utilizando Cucumber, Selenium y Serenity BDD. Con lenguaje JAVA
 
