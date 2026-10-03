@@ -1,16 +1,15 @@
 plugins {
     id 'java'
-    id 'net.serenity-bdd.serenity-gradle-plugin' version '3.9.8'
+    id 'net.serenity-bdd.serenity-gradle-plugin' version '4.3.2'
 }
 
 group 'co.com.parabank'
 version '1.0-SNAPSHOT'
 
 ext {
-    serenityVersion = '3.9.8'
-    cucumberVersion = '7.15.0'
+    serenityVersion = '4.3.4'
+    cucumberVersion = '7.31.0'
     lombokVersion = '1.18.30'
-    seleniumVersion = '4.19.1'
     fakerVersion = '1.0.2'
     assertj_core_version="3.23.1"
 }
@@ -28,11 +27,9 @@ dependencies {
     implementation "net.serenity-bdd:serenity-screenplay-webdriver:${serenityVersion}"
     implementation "org.assertj:assertj-core:${assertj_core_version}"
 
-    implementation "org.seleniumhq.selenium:selenium-java:${seleniumVersion}"
 
     testImplementation "io.cucumber:cucumber-java:${cucumberVersion}"
     testImplementation "io.cucumber:cucumber-junit:${cucumberVersion}"
-    testImplementation 'io.github.bonigarcia:webdrivermanager:5.4.1'
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
