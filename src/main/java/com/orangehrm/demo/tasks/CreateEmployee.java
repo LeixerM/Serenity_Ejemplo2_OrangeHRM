@@ -39,7 +39,7 @@ public class CreateEmployee implements Task {
                 Click.on(EmployeeOrangeHrmUi.SECTION_PIM),
                 WaitUntil.the(EmployeeOrangeHrmUi.BUTTON_ADD_EMPLOYEE, isVisible()).forNoMoreThan(20).seconds(),
                 Click.on(EmployeeOrangeHrmUi.BUTTON_ADD_EMPLOYEE),
-                WaitUntil.the(EmployeeOrangeHrmUi.INPUT_UPLOAD_AVATAR, isPresent()).forNoMoreThan(40).seconds()
+                WaitUntil.the(EmployeeOrangeHrmUi.BUTTON_UPLOAD_AVATAR, isVisible()).forNoMoreThan(40).seconds()
         );
 
         WebDriver driver = BrowseTheWeb.as(actor).getDriver();
@@ -81,7 +81,7 @@ public class CreateEmployee implements Task {
                 WaitUntil.the(EmployeeOrangeHrmUi.INPUT_UPLOAD_AVATAR, WebElementStateMatchers.isVisible()).forNoMoreThan(60).seconds()
                 );
         actor.attemptsTo(
-                WaitUntil.the(EmployeeOrangeHrmUi.INPUT_UPLOAD_AVATAR, isPresent()).forNoMoreThan(40).seconds()
+                WaitUntil.the(EmployeeOrangeHrmUi.BUTTON_UPLOAD_AVATAR, isVisible()).forNoMoreThan(40).seconds()
         );
         WebDriver driver = BrowseTheWeb.as(actor).getDriver();
         JavascriptExecutor js = (JavascriptExecutor) driver;
