@@ -22,8 +22,6 @@ ext {
     // Aligned with the JUnit version managed by Serenity BDD 5.3.11
     junitVersion = '6.0.3'
     logbackVersion = '1.5.38'
-    lombokVersion = '1.18.30'
-    fakerVersion = '1.0.2'
 }
 
 dependencies {
@@ -38,9 +36,6 @@ dependencies {
     implementation 'org.junit.jupiter:junit-jupiter-engine'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation "ch.qos.logback:logback-classic:${logbackVersion}"
-    implementation "com.github.javafaker:javafaker:${fakerVersion}"
-    compileOnly "org.projectlombok:lombok:${lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -49,7 +44,7 @@ tasks.withType(JavaCompile).configureEach {
 
 test {
     useJUnitPlatform()
-    systemProperties System.getProperties().findAll { it.key.toString().startsWith('environment') || it.key.toString().startsWith('cucumber.') }
+    systemProperties System.getProperties().findAll { it.key.toString().startsWith('environment') || it.key.toString().startsWith('cucumber.') || it.key.toString().startsWith('orangehrm.') }
     testLogging {
         events 'passed', 'skipped', 'failed'
         exceptionFormat 'full'

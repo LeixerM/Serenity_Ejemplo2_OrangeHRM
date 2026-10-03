@@ -1,4 +1,4 @@
-package runners;
+package com.orangehrm.demo.runners;
 
 import org.junit.platform.suite.api.ConfigurationParameter;
 import org.junit.platform.suite.api.IncludeEngines;
@@ -11,7 +11,7 @@ import static io.cucumber.junit.platform.engine.Constants.PLUGIN_PROPERTY_NAME;
 @Suite
 @IncludeEngines("cucumber")
 @SelectClasspathResource("features")
-@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "stepdefinitions")
+@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "com.orangehrm.demo.stepdefinitions")
 @ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "net.serenitybdd.cucumber.core.plugin.SerenityReporterParallel,pretty")
-public class TestRunner {
+public class OrangeHrmTestSuite {
 }
