@@ -1,41 +1,84 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
-
-name: Ejecucion Test del Proyecto
+name: Serenity tests
 
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
+    inputs:
+      cucumber_tags:
+        description: 'Cucumber tag expression to run (empty = all scenarios)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build:
-
+  test:
+    name: Run Serenity BDD suite
     runs-on: ubuntu-latest
-    
-
+    timeout-minutes: 25
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        
-    - name: Make gradlew executable
-      run: chmod +x ./gradlew
-      
-    - name: Build with Gradle Wrapper
-      run: ./gradlew clean test
+      - name: Checkout repository
+        uses: actions/checkout@v7
 
-    - name: Test Report Generation
-      uses: actions/upload-artifact@v4
-      if: success() || failure()
-      with:
-          name: Serenity Report                 # Name of the folder
-          path: target/site/serenity/           # Path to test results
+      - name: Set up JDK 21
+        uses: actions/setup-java@v6
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Set up Gradle (with cache)
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Run tests and build the Serenity report
+        env:
+          CUCUMBER_TAGS: ${{ inputs.cucumber_tags }}
+        run: |
+          chmod +x ./gradlew
+          TAGS_ARG=()
+          if [ -n "${CUCUMBER_TAGS}" ]; then TAGS_ARG=("-Dcucumber.filter.tags=${CUCUMBER_TAGS}"); fi
+          ./gradlew clean test aggregate "${TAGS_ARG[@]}"
+
+      - name: Upload Serenity report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: serenity-report
+          path: target/site/serenity/
+          if-no-files-found: warn
+
+      - name: Upload report for GitHub Pages
+        if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: target/site/serenity/
+
+  deploy-report:
+    name: Publish report to GitHub Pages
+    needs: test
+    # Publish the latest report from main, including failing runs, so the live report reflects reality.
+    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.test.result != 'cancelled'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure Pages
+        uses: actions/configure-pages@v6
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
